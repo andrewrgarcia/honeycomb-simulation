@@ -7,6 +7,11 @@ function getRandomInt(max) {
 
 const Honeycomb = () => {
   const [bees, setBees] = useState(Array.from({ length: 10 }, () => ({ x: getRandomInt(5), y: getRandomInt(5) })));
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -19,6 +24,8 @@ const Honeycomb = () => {
     }, 500);
     return () => clearInterval(interval);
   }, []);
+
+  if (!hasMounted) return null;
 
   return (
     <div className={styles.honeycomb}>
