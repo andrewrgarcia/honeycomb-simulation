@@ -5,7 +5,6 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
-// Adjusted hexToPixel for pointy-top orientation
 function hexToPixel(q, r, size) {
   const x = size * (3 / 2) * q;
   const y = size * Math.sqrt(3) * (r + q / 2);
@@ -13,15 +12,16 @@ function hexToPixel(q, r, size) {
 }
 
 const Honeycomb = () => {
-  const hexRadius = 7; // Larger grid radius for more cells
-  const hexSize = 40; // Increase size of each hex cell
+  const hexRadius = 7;
+  const hexSize = 40;
+  const beeCount = 100; 
   const [bees, setBees] = useState([]);
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    // Initialize bee positions
+    // Initialize bee positions with increased count
     setBees(
-      Array.from({ length: 10 }, () => ({
+      Array.from({ length: beeCount }, () => ({
         q: getRandomInt(hexRadius * 2 + 1) - hexRadius,
         r: getRandomInt(hexRadius * 2 + 1) - hexRadius,
       }))
@@ -44,28 +44,30 @@ const Honeycomb = () => {
   if (!hasMounted) return null;
 
   return (
-    <div className={styles.honeycomb}>
-      {Array.from({ length: hexRadius * 2 + 1 }, (_, r) =>
-        Array.from({ length: hexRadius * 2 + 1 }, (_, q) => {
-          const adjustedQ = q - hexRadius;
-          const adjustedR = r - hexRadius;
-          const s = -adjustedQ - adjustedR;
-          if (Math.abs(adjustedQ) + Math.abs(adjustedR) + Math.abs(s) <= hexRadius) {
-            const { x, y } = hexToPixel(adjustedQ, adjustedR, hexSize);
-            const hasBee = bees.some((bee) => bee.q === adjustedQ && bee.r === adjustedR);
-            return (
-              <div
-                key={`${adjustedQ}-${adjustedR}`}
-                className={styles.cell}
-                style={{ transform: `translate(${x}px, ${y}px)` }}
-              >
-                {hasBee ? '🐝' : ''}
-              </div>
-            );
-          }
-          return null;
-        })
-      )}
+    <div className={styles.honeycombContainer}>
+      <div className={styles.honeycomb}>
+        {Array.from({ length: hexRadius * 2 + 1 }, (_, r) =>
+          Array.from({ length: hexRadius * 2 + 1 }, (_, q) => {
+            const adjustedQ = q - hexRadius;
+            const adjustedR = r - hexRadius;
+            const s = -adjustedQ - adjustedR;
+            if (Math.abs(adjustedQ) + Math.abs(adjustedR) + Math.abs(s) <= hexRadius) {
+              const { x, y } = hexToPixel(adjustedQ, adjustedR, hexSize);
+              const hasBee = bees.some((bee) => bee.q === adjustedQ && bee.r === adjustedR);
+              return (
+                <div
+                  key={`${adjustedQ}-${adjustedR}`}
+                  className={styles.cell}
+                  style={{ transform: `translate(${x}px, ${y}px)` }}
+                >
+                  {hasBee ? '🐝' : ''}
+                </div>
+              );
+            }
+            return null;
+          })
+        )}
+      </div>
     </div>
   );
 };
